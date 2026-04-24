@@ -1,42 +1,81 @@
-#https://github.com/Koshmarjk/main
-"""Точка входа консольного симулятора жизни."""
+"""
+Точка входа симулятора экосистемы.
 
+Связывает три слоя приложения:
+  1. Слой данных    (data.py)      — начальные параметры
+  2. Бизнес-логика  (ecosystem.py, population.py, organism.py)
+  3. Слой интерфейса (ui.py)       — вывод в консоль
+
+Поток вызовов:
+  main → data.get_*()            # получить данные
+       → Ecosystem / Population  # выполнить логику
+       → ui.show_*()             # отобразить результат
+"""
+
+import data
+import ui
 from ecosystem import Ecosystem
 from organism import Herbivore, Predator
 from population import Population
-from utils import get_simulation_summary, print_separator
 
-REPO_URL = "https://github.com/Koshmarjk/main" 
+REPO_URL = "https://github.com/Koshmarjk/main"  # ссылка на репозиторий
+
+
+def build_ecosystem(config: dict) -> Ecosystem:
+    """Собирает экосистему из данных слоя данных.
+
+    Читает начальные данные через data.get_population_data(),
+    создаёт объекты бизнес-логики и регистрирует их в экосистеме.
+
+    Args:
+        config: Конфигурация симуляции из data.get_simulation_config().
+
+    Returns:
+        Готовая к запуску экосистема.
+    """
+    eco = Ecosystem(config)
+
+    # Слой данных → бизнес-логика: читаем конфигурацию популяций
+    for species, role, members_data in data.get_population_data():
+        pop = Population(species)
+        for name, energy in members_data:
+            if role == "herbivore":
+                organism = Herbivore(name, energy)
+            else:
+                organism = Predator(name, energy)
+            # Событие о добавлении уходит в слой интерфейса
+            event = pop.add_member(organism)
+            ui.show_setup_event(event)
+        eco.add_population(pop)
+
+    return eco
 
 
 def main() -> None:
-    """Основная функция запуска симуляции."""
-    print("Консольный симулятор жизни")
-    print_separator("=")
+    """Главная функция: запускает симулятор экосистемы."""
 
-    # Создаём экосистему
-    eco = Ecosystem()
+    # Слой интерфейса: приветствие
+    ui.show_header()
 
-    # Создаём популяцию травоядных
-    herbivore_pop = Population("Зайцы")
-    herbivore_pop.add_member(Herbivore("Заяц Борис", 30))
-    herbivore_pop.add_member(Herbivore("Заяц Миша", 25))
+    # Слой данных → конфигурация
+    config = data.get_simulation_config()
 
-    # Создаём популяцию хищников
-    predator_pop = Population("Лисы")
-    predator_pop.add_member(Predator("Лиса Алиса", 40))
+    # Бизнес-логика: создаём экосистему
+    eco = build_ecosystem(config)
 
-    # Добавляем популяции в экосистему
-    eco.add_population(herbivore_pop)
-    eco.add_population(predator_pop)
+    # Основной цикл симуляции
+    for _ in range(config["days"]):
+        # Слой интерфейса: заголовок дня
+        ui.show_day_header(eco.day + 1)
 
-    # Запускаем симуляцию на 3 дня
-    for _ in range(3):
-        eco.simulate_day()
+        # Бизнес-логика: выполняем день → получаем события
+        day_log = eco.simulate_day()
 
-    # Итог
-    print_separator("=")
-    print(get_simulation_summary(eco.day, eco.populations))
+        # Слой интерфейса: отображаем события дня
+        ui.show_day_log(day_log)
+
+    # Слой интерфейса: итоговый отчёт
+    ui.show_final_report(eco.day, eco.get_final_status())
 
 
 if __name__ == "__main__":
