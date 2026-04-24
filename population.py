@@ -1,3 +1,4 @@
+#https://github.com/Koshmarjk/main
 """Модуль для работы с популяциями организмов."""
 
 from organism import Organism
