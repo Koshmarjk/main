@@ -5,7 +5,7 @@
 ## Структура проекта
 
 ```
-life\_simulator/
+life\\\_simulator/
 ├── main.py        # точка входа
 ├── ecosystem.py   # класс Ecosystem — управляет симуляцией
 ├── organism.py    # классы Organism, Herbivore, Predator
@@ -32,7 +32,7 @@ python main.py
 
 ## Роли в команде
 
-* **Архитектор** — Константин Дяченко
+* **Архитектор** — Дяченко Константин
 * **Разработчик (organism.py, population.py)** — Вишняков Александр
 * **Разработчик (ecosystem.py)** — Колобова Маргарита
 * **Тестировщик** — Апаркина Ника
