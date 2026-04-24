@@ -1,3 +1,4 @@
+#https://github.com/Koshmarjk/main
 """Точка входа консольного симулятора жизни."""
 
 from ecosystem import Ecosystem
