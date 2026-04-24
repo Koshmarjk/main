@@ -1,3 +1,4 @@
+# Модуль экосистемы
 """Модуль экосистемы — управляет симуляцией."""
 
 from organism import Herbivore, Predator
