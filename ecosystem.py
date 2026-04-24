@@ -1,3 +1,4 @@
+#https://github.com/Koshmarjk/main/edit/main
 """
 Бизнес-логика (Business Logic Layer) — экосистема.
 
