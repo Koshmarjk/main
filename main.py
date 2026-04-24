@@ -5,7 +5,7 @@ from organism import Herbivore, Predator
 from population import Population
 from utils import get_simulation_summary, print_separator
 
-REPO_URL = "https://github.com/username/life_simulator"  # ссылка на репозиторий
+REPO_URL = "https://github.com/Koshmarjk/main"  # ссылка на репозиторий
 
 
 def main() -> None:
